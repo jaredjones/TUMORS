@@ -1,0 +1,20 @@
+Ubuntu Instructions:
+1) apt-get update
+2) apt-get -y upgrade
+3) apt-get -y install openssl libboost-thread1.54-dev libboost-system1.54-dev libboost-filesystem1.54-dev libreadline6-dev libjemalloc-dev
+4) Clone the GIT REPO
+5) CD into the Server/TUMORS folder.
+6) mkdir BIN
+7) cd BIN
+8) ../ -DWITH_WARNINGS=0
+9) make install
+
+OS X Instructions:
+1) Install HomeBrew
+2) Type: brew update
+3) Type: brew install boost ace readline openssl
+4) Type: brew link -f openssl
+5) git clone the repo
+6) Run the shell script found in the TUMORS Folder. Change directories to the TUMORS folder
+and then type sh ./CompileForOSX.sh
+7) Go into the newly created BIN Folder and open the Xcode Project!!!!
