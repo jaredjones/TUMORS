@@ -40,8 +40,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.55.0 COMPONENTS filesystem system thread) 
 
 if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS}) 
-    add_executable(progname file1.cxx file2.cxx) 
+    include_directories(${Boost_INCLUDE_DIRS})
     target_link_libraries(progname ${Boost_LIBRARIES})                                                                                                                                                                                                                            
 endif()
 
