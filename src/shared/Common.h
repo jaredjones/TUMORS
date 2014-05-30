@@ -102,6 +102,10 @@
 #  define ATTR_DEPRECATED
 #endif //COMPILER == COMPILER_GNU
 
+#if UNIX_FLAVOUR == UNIX_FLAVOUR_LINUX
+#include <linux/limits.h>
+#endif
+
 #if PLATFORM == PLATFORM_WINDOWS
 #  define TUMORS_PATH_MAX MAX_PATH
 #  ifndef DECLSPEC_NORETURN
@@ -111,7 +115,6 @@
 #    define DECLSPEC_DEPRECATED __declspec(deprecated)
 #  endif //DECLSPEC_DEPRECATED
 #else //PLATFORM != PLATFORM_WINDOWS
-   #include <linux/limits.h>
 #  define TUMORS_PATH_MAX PATH_MAX
 #  define DECLSPEC_NORETURN
 #  define DECLSPEC_DEPRECATED
