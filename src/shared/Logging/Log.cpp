@@ -210,7 +210,7 @@ void Log::ReadAppendersFromConfig()
 void Log::ReadLoggersFromConfig()
 {
     std::list<std::string> keys = sConfig.GetKeysByString(LoggerPrepender);
-    for (std::string tmp : keys)
+    while (!keys.empty())
     {
         CreateLoggerFromConfig(keys.front());
         keys.pop_front();

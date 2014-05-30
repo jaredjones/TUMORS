@@ -9,6 +9,7 @@
 #ifndef __TUMORS__Logging__
 #define __TUMORS__Logging__
 
+#include <cstdarg>
 #include <iostream>
 #include <string>
 #include <unordered_map>
