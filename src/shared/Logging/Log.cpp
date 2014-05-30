@@ -274,8 +274,8 @@ void Log::LoadFromConfig()
 {
     Close();
     
-    if (sConfig.GetBoolDefault("Log.Async.Enable", false))
-        ;//DO NOTHING, NOT IMPLEMENTED YET. PRINTF is ASYNC/THREADSAFE BY POSIX STANDARDIZATION
+    //if (sConfig.GetBoolDefault("Log.Async.Enable", false))
+        //;//DO NOTHING, NOT IMPLEMENTED YET. PRINTF is ASYNC/THREADSAFE BY POSIX STANDARDIZATION
     
     AppenderId = 0;
     m_logsDir = sConfig.GetStringDefault("LogsDir", "");

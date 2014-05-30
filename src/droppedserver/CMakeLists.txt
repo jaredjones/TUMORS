@@ -54,6 +54,8 @@ if( NOT WIN32 )
 )
 endif()
 
+add_dependencies(droppedserver revision.h)
+
 if( UNIX AND NOT NOJEM )
   set(droppedserver_LINK_FLAGS "${droppedserver_LINK_FLAGS}")
 endif()

@@ -18,3 +18,30 @@ OS X Instructions:
 6) Run the shell script found in the TUMORS Folder. Change directories to the TUMORS folder
 and then type sh ./CompileForOSX.sh
 7) Go into the newly created BIN Folder and open the Xcode Project!!!!
+
+Windows Instructions:
+1a) (Optional): Install Linux or OS X and proceed with above instructions. Windows is one giant pain in the ass for software development.
+1) Install GitExtensions
+	*It includes Git, MySYSGit, and KDiff you'll need all three.
+2) Choose a compiler
+	*We require at least a Visual C++ 2013 compiler or greater.
+	*You're welcome to use another compiler as long as C++11 is supported.
+3) Install .NET Framework 3.5, 4,0, and 4.5
+4) Install CMake
+5) Install OpenSSL Binaries x86 and x64(If you have a 64bit machine).
+	*DO NOT INSTALL THE LIGHT BINARIES, GET THE FULL BINARIES
+	*SECURITY WARNING: Due to heartbleed make sure to install a version of OpenSSL >=1.0.1g
+	*Note #1: If you have a "Missing Microsoft Visual C++ 2008 Redistributables" error message while installing OpenSSL, find the Visual C++ 2008 Redistributables download (1.7MB Installer) in the same list where OpenSSL is located and install it. The Visual C++ 2008 Redistributables (x64) is for 64bit. Also note that there are two "Visual C++ 2008 Redistributables" download links. They are both the same.
+	*Note #2: While installing OpenSSL, choose The OpenSSL binaries (/bin) directory (NOT "The Windows system directory") when given the choice on where to copy the OpenSSL DLLs. These DLLs will need to be located easily for Compiling the Source.
+6) Install BOOST
+	a) Download boost source code for Windows from their website, you'll need version 1.55.0
+	b) Find a suitable location to extract the sourecode to. Find a place you won't touch or change.
+	c) When you unzip make sure you get the whole directory
+	c) Remember this location.
+7) Launch CMake GUI and set the source code section to the tumors folder where CMakeLists.txt is found.
+7a) Set the build binaries location to someplace you want the binaries and Visual Studio project files to be.
+8) Click Configure
+9) Look for any red text, you'll likely see a warning pop up about BOOST. Select the "Advanced" checkmark and find Boost_INCLUDE_DIR.
+9a) Set the Boost_INCLUDE_DIR to point to where you extracted the BOOST files earlier in step 6c.
+10) Select configure again and all warnings should be gone.
+11) Select generate and if all goes well you should have a Visual Studio project file in the location of where you set "Build the Binaries" to.

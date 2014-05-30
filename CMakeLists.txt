@@ -30,11 +30,20 @@ endif()
 include(CheckPlatform)
 
 set(OPENSSL_EXPECTED_VERSION 1.0.1)
-set(BOOST_EXPECTED_VERSION 1.55.0)
 
 find_package(PCHSupport)
 find_package(OpenSSL ${OPENSSL_EXPECTED_VERSION} REQUIRED)
-find_package(Boost ${BOOST_EXPECTED_VERSION} REQUIRED COMPONENTS filesystem system thread)
+
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
+find_package(Boost 1.55.0 COMPONENTS filesystem system thread) 
+
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS}) 
+    add_executable(progname file1.cxx file2.cxx) 
+    target_link_libraries(progname ${Boost_LIBRARIES})                                                                                                                                                                                                                            
+endif()
 
 if( UNIX )
 	find_package(Readline)
@@ -44,8 +53,10 @@ if(NOT WITHOUT_GIT)
   find_package(Git)
 endif()
 
-include(cmake/showoptions.cmake)
+# Find revision ID and hash of the sourcetree
+include(cmake/genrev.cmake)
 
+include(cmake/showoptions.cmake)
 
 # add dependencies
 add_subdirectory(dep)

@@ -18,6 +18,7 @@
 #include <map>
 #include <list>
 
+#include "Common.h"
 #include "Log.h"
 
 #define sConfig ConfigMgr::getInstance()

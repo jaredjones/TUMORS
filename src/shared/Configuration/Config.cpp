@@ -106,7 +106,7 @@ std::list<std::string> ConfigMgr::GetKeysByString(std::string const &name)
             continue;
         
         bool nonWhiteFound = false;
-        for (uint64 i = static_cast<uint64>(pos); i > 0; i--)
+        for (uint32 i = static_cast<uint32>(pos); i > 0; i--)
         {
             if (!isspace(s[i-1]))
                 nonWhiteFound = true;
@@ -115,9 +115,9 @@ std::list<std::string> ConfigMgr::GetKeysByString(std::string const &name)
             continue;
         
         std::stringstream ss;
-        for (uint64 i = static_cast<uint64>(pos); i < s.length(); i++)
+        for (uint32 i = static_cast<uint32>(pos); i < s.length(); i++)
         {
-            if (i == static_cast<uint64>(pos))
+            if (i == static_cast<uint32>(pos))
             {
                 ss.clear();
                 ss.str(std::string());

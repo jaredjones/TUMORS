@@ -7,7 +7,8 @@
 //
 
 #include "Util.h"
-#include "unistd.h"
+#include "utf8.h"
+//#include "unistd.h"
 
 Tokenizer::Tokenizer(const std::string &src, const char sep, uint32 vectorReserve)
 {
@@ -81,11 +82,137 @@ void vutf8printf(FILE* out, const char *str, va_list* ap)
         temp_len = 32*1024-1;
     
     size_t wtemp_len = 32*1024-1;
-    Utf8toWStr(temp_buf, temp_len, wtemp_buf, wtemp_len);
-    
+	Utf8toWStr(temp_buf, temp_len, wtemp_buf, wtemp_len);
     CharToOemBuffW(&wtemp_buf[0], &temp_buf[0], wtemp_len+1);
     fprintf(out, "%s", temp_buf);
 #else
     vfprintf(out, str, *ap);
 #endif
+}
+
+size_t utf8length(std::string& utf8str)
+{
+	try
+	{
+		return utf8::distance(utf8str.c_str(), utf8str.c_str() + utf8str.size());
+	}
+	catch (std::exception)
+	{
+		utf8str = "";
+		return 0;
+	}
+}
+
+void utf8truncate(std::string& utf8str, size_t len)
+{
+	try
+	{
+		size_t wlen = utf8::distance(utf8str.c_str(), utf8str.c_str() + utf8str.size());
+		if (wlen <= len)
+			return;
+
+		std::wstring wstr;
+		wstr.resize(wlen);
+		utf8::utf8to16(utf8str.c_str(), utf8str.c_str() + utf8str.size(), &wstr[0]);
+		wstr.resize(len);
+		char* oend = utf8::utf16to8(wstr.c_str(), wstr.c_str() + wstr.size(), &utf8str[0]);
+		utf8str.resize(oend - (&utf8str[0]));                 // remove unused tail
+	}
+	catch (std::exception)
+	{
+		utf8str = "";
+	}
+}
+
+bool Utf8toWStr(char const* utf8str, size_t csize, wchar_t* wstr, size_t& wsize)
+{
+	try
+	{
+		size_t len = utf8::distance(utf8str, utf8str + csize);
+		if (len > wsize)
+		{
+			if (wsize > 0)
+				wstr[0] = L'\0';
+			wsize = 0;
+			return false;
+		}
+
+		wsize = len;
+		utf8::utf8to16(utf8str, utf8str + csize, wstr);
+		wstr[len] = L'\0';
+	}
+	catch (std::exception)
+	{
+		if (wsize > 0)
+			wstr[0] = L'\0';
+		wsize = 0;
+		return false;
+	}
+
+	return true;
+}
+
+bool Utf8toWStr(const std::string& utf8str, std::wstring& wstr)
+{
+	try
+	{
+		if (size_t len = utf8::distance(utf8str.c_str(), utf8str.c_str() + utf8str.size()))
+		{
+			wstr.resize(len);
+			utf8::utf8to16(utf8str.c_str(), utf8str.c_str() + utf8str.size(), &wstr[0]);
+		}
+	}
+	catch (std::exception)
+	{
+		wstr = L"";
+		return false;
+	}
+
+	return true;
+}
+
+bool WStrToUtf8(wchar_t* wstr, size_t size, std::string& utf8str)
+{
+	try
+	{
+		std::string utf8str2;
+		utf8str2.resize(size * 4);                            // allocate for most long case
+
+		if (size)
+		{
+			char* oend = utf8::utf16to8(wstr, wstr + size, &utf8str2[0]);
+			utf8str2.resize(oend - (&utf8str2[0]));               // remove unused tail
+		}
+		utf8str = utf8str2;
+	}
+	catch (std::exception)
+	{
+		utf8str = "";
+		return false;
+	}
+
+	return true;
+}
+
+bool WStrToUtf8(std::wstring wstr, std::string& utf8str)
+{
+	try
+	{
+		std::string utf8str2;
+		utf8str2.resize(wstr.size() * 4);                     // allocate for most long case
+
+		if (wstr.size())
+		{
+			char* oend = utf8::utf16to8(wstr.c_str(), wstr.c_str() + wstr.size(), &utf8str2[0]);
+			utf8str2.resize(oend - (&utf8str2[0]));                // remove unused tail
+		}
+		utf8str = utf8str2;
+	}
+	catch (std::exception)
+	{
+		utf8str = "";
+		return false;
+	}
+
+	return true;
 }

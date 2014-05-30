@@ -27,6 +27,7 @@ set(shared_STAT_SRCS
 
 include_directories(
   ${CMAKE_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/dep/utf8cpp
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/Cryptography
