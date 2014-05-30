@@ -41,7 +41,6 @@ find_package(Boost 1.55.0 COMPONENTS filesystem system thread)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
-    target_link_libraries(progname ${Boost_LIBRARIES})                                                                                                                                                                                                                            
 endif()
 
 if( UNIX )

@@ -29,25 +29,6 @@
 #include <thread>
 #include <mutex>
 
-#if COMPILER == COMPILER_MICROSOFT
-
-#include <float.h>
-#include <Windows.h>
-
-#define snprintf _snprintf
-#define atoll _atoi64
-#define vsnprintf _vsnprintf
-#define finite(X) _finite(X)
-#define llabs _abs64
-
-#else
-
-#include <unistd.h>
-
-#define stricmp strcasecmp
-#define strnicmp strncasecmp
-
-#endif
 
 // current platform and compiler
 #define PLATFORM_WIN32 0
@@ -111,6 +92,28 @@
 #else
 #define ARCH "X86"
 #endif
+
+
+#if COMPILER == COMPILER_MICROSOFT
+
+#include <float.h>
+#include <Windows.h>
+
+#define snprintf _snprintf
+#define atoll _atoi64
+#define vsnprintf _vsnprintf
+#define finite(X) _finite(X)
+#define llabs _abs64
+
+#else
+
+#include <unistd.h>
+
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+
+#endif
+
 
 #if COMPILER == COMPILER_GNU
 #  define ATTR_NORETURN __attribute__((noreturn))
