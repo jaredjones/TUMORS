@@ -1,12 +1,12 @@
 Ubuntu Instructions:
 1) apt-get update
 2) apt-get -y upgrade
-3) apt-get -y install cmake git openssl libboost-thread1.54-dev libboost-system1.54-dev libboost-filesystem1.54-dev libreadline6-dev libjemalloc-dev
+3) apt-get -y install cmake git openssl libssl-dev libboost-thread1.55-dev libboost-system1.55-dev libboost-filesystem1.55-dev libreadline6-dev libjemalloc-dev
 4) Clone the GIT REPO
 5) CD into the Server/TUMORS folder.
 6) mkdir BIN
 7) cd BIN
-8) ../ -DWITH_WARNINGS=0
+8) cmake ../ -DWITH_WARNINGS=0
 9) make install
 
 OS X Instructions:
