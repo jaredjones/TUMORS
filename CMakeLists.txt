@@ -34,14 +34,11 @@ set(OPENSSL_EXPECTED_VERSION 1.0.1)
 find_package(PCHSupport)
 find_package(OpenSSL ${OPENSSL_EXPECTED_VERSION} REQUIRED)
 
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.55.0 COMPONENTS filesystem system thread) 
 
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-endif()
+set(OPENSSL_EXPECTED_VERSION 1.0.1)
+
+find_package(Boost 1.55.0 REQUIRED COMPONENTS filesystem system thread)
+include_directories( ${Boost_INCLUDE_DIRS} )
 
 if( UNIX )
 	find_package(Readline)
