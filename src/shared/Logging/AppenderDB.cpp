@@ -15,6 +15,8 @@ AppenderDB::~AppenderDB() { }
 
 void AppenderDB::_write(LogMessage const& message)
 {
+    message.type.find("sql");//DELETE THIS, POINTLESS TO STOP WARNING
+    
     /*
     // Avoid infinite loop, PExecute triggers Logging with "sql.sql" type
     if (!enabled || !message.type.find("sql"))

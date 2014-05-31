@@ -143,7 +143,7 @@
 #  define DECLSPEC_DEPRECATED
 #endif //PLATFORM
 
-
+#if PLATFORM == PLATFORM_WINDOWS
 #ifndef _UNISTD_H
 #define _UNISTD_H    1
 
@@ -200,7 +200,7 @@ typedef unsigned __int64  uint64_t;
 #endif
 
 #endif /* unistd.h  */
-
+#endif
 
 enum TimeConstants
 {
