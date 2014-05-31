@@ -40,7 +40,6 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/src/gameworld/World
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${OPENSSL_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
 )
 
 add_executable(droppedserver
@@ -68,7 +67,6 @@ target_link_libraries(droppedserver
   ${JEMALLOC_LIBRARY}
   ${READLINE_LIBRARY}
   ${OPENSSL_LIBRARIES}
-  ${Boost_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
 )
 

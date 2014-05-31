@@ -36,7 +36,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Configuration
   #${ACE_INCLUDE_DIR}
   #${MYSQL_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIRS}
   ${OPENSSL_INCLUDE_DIR}
 )
 
@@ -47,7 +46,6 @@ add_library(shared STATIC
 
 target_link_libraries(shared
 	#${ACE_LIBRARY}
-	${Boost_LIBRARIES}
 )
 
 if (USE_PCH)

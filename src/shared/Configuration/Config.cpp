@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Uvora. All rights reserved.
 //
 
+#include <algorithm>
+
 #include "Config.h"
-#include <boost/algorithm/string.hpp>
 
 bool ConfigMgr::LoadInitial(char const* file)
 {
@@ -18,15 +19,15 @@ bool ConfigMgr::LoadInitial(char const* file)
     _filename = file;
     if( !(access( _filename.c_str(), F_OK ) != -1) )
     {
-        boost::filesystem::path fullLocalPath(boost::filesystem::current_path());
+        /*boost::filesystem::path fullLocalPath(boost::filesystem::current_path());
     
     #ifdef _WIN32
         _filename = fullLocalPath.string() + "\\" + _filename;
     #else
         _filename = fullLocalPath.string() + "/" + _filename;
-    #endif
+    #endif*/
     }
-    std::ifstream infile(_filename);
+    std::ifstream infile(file);
     
     if(infile)
     {
@@ -154,6 +155,7 @@ bool ConfigMgr::GetBoolDefault(const char* name, bool def)
     if (got == _configMap.end())
         return def;
     
-    std::string tmp = boost::to_upper_copy((std::string)_configMap.at(name));
+    std::string tmp = (std::string)_configMap.at(name);
+    std::transform(tmp.begin(), tmp.end(),tmp.begin(), ::toupper);
     return (tmp == "1" || tmp == "YES" || tmp == "TRUE" );
 }

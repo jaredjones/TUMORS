@@ -9,9 +9,6 @@
 #ifndef TUMORS_Config_h
 #define TUMORS_Config_h
 
-#include <boost/filesystem.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <mutex>
 #include <fstream>
 #include <string>
@@ -48,7 +45,6 @@ public:
 private:
     typedef std::mutex LockType;
     typedef std::lock_guard<LockType> GuardType;
-    typedef boost::property_tree::ptree PropertyTree;
     
     LockType _configLock;
     

@@ -30,7 +30,6 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/World
 	${OPENSSL_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
 )
 
 add_library(gameworld STATIC
@@ -40,7 +39,6 @@ add_library(gameworld STATIC
 
 target_link_libraries(gameworld
 	#${ACE_LIBRARY}
-	${Boost_LIBRARIES}
 )
 
 if( USE_PCH )
