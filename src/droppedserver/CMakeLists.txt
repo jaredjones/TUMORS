@@ -56,7 +56,7 @@ endif()
 add_dependencies(droppedserver revision.h)
 
 if( UNIX AND NOT NOJEM )
-  set(worldserver_LINK_FLAGS "-pthread -lncurses ${worldserver_LINK_FLAGS}")
+  set(droppedserver_LINK_FLAGS "-pthread -lncurses ${droppedserver_LINK_FLAGS}")
 endif()
 
 set_target_properties(droppedserver PROPERTIES LINK_FLAGS "${droppedserver_LINK_FLAGS}")
