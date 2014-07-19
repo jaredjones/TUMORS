@@ -1,7 +1,7 @@
 Ubuntu Instructions:
 1) apt-get update
 2) apt-get -y upgrade
-3) apt-get -y install cmake git openssl libssl-dev libboost-all-dev libreadline6-dev  libjemalloc-dev libncurses5-dev
+3) apt-get -y install cmake git openssl libssl-dev libboost-all-dev libreadline6-dev libjemalloc-dev libncurses5-dev
 4) Clone the GIT REPO
 5) CD into the Server/TUMORS folder.
 6) mkdir BIN
