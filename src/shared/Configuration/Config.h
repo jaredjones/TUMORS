@@ -33,6 +33,7 @@ public:
     std::string const& GetFilename();
     std::string GetStringDefault(const char* name, const std::string &def);
     bool GetBoolDefault(const char* name, bool def);
+    int GetIntDefault(const char* name, int def);
     std::list<std::string> GetKeysByString(std::string const &name);
     
     static ConfigMgr& getInstance()
