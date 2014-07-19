@@ -68,6 +68,7 @@ target_link_libraries(droppedserver
   ${READLINE_LIBRARY}
   ${OPENSSL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${Boost_LIBRARIES}
 )
 
 

@@ -34,7 +34,7 @@ set(OPENSSL_EXPECTED_VERSION 1.0.1)
 find_package(PCHSupport)
 find_package(OpenSSL ${OPENSSL_EXPECTED_VERSION} REQUIRED)
 
-set(OPENSSL_EXPECTED_VERSION 1.0.1)
+include(ConfigureBoost)
 
 if( UNIX )
 	find_package(Readline)

@@ -46,6 +46,7 @@ add_library(shared STATIC
 
 target_link_libraries(shared
 	#${ACE_LIBRARY}
+	${Boost_LIBRARIES}
 )
 
 if (USE_PCH)

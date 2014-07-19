@@ -38,7 +38,7 @@ add_library(gameworld STATIC
 )
 
 target_link_libraries(gameworld
-	#${ACE_LIBRARY}
+	${Boost_LIBRARIES}
 )
 
 if( USE_PCH )
