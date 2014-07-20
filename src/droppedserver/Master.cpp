@@ -22,6 +22,7 @@
 #include "Cryptography/BigNumber.h"
 #include "Logging/Log.h"
 #include "GameThread/GameRunnable.h"
+#include "Threading/ProcessPriority.h"
 
 #include "World/World.h"
 
@@ -76,6 +77,9 @@ int Master::Run()
     
     for (int i = 0; i < numThreads; i++)
         threadPool.push_back(std::thread(boost::bind(&boost::asio::io_service::run, &_ioService)));
+    
+    // Set process priority according to configuration settings
+    SetProcessPriority("server.worldserver");
     
     //Start DB
     

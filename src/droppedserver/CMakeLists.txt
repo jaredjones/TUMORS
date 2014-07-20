@@ -32,10 +32,11 @@ endif()
 include_directories(
   	${CMAKE_BINARY_DIR}
 	${CMAKE_SOURCE_DIR}/src/shared
+	${CMAKE_SOURCE_DIR}/src/shared/Configuration
 	${CMAKE_SOURCE_DIR}/src/shared/Cryptography
 	${CMAKE_SOURCE_DIR}/src/shared/Logging
+	${CMAKE_SOURCE_DIR}/src/shared/Threading
 	${CMAKE_SOURCE_DIR}/src/shared/Utilities
-	${CMAKE_SOURCE_DIR}/src/shared/Configuration
 	${CMAKE_SOURCE_DIR}/src/gameworld
 	${CMAKE_SOURCE_DIR}/src/gameworld/World
 	${CMAKE_CURRENT_SOURCE_DIR}

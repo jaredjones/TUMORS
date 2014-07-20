@@ -2,10 +2,12 @@ if( USE_PCH )
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
+file(GLOB_RECURSE sources_Configuration Configuration/*.cpp Configuration/*.h)
 file(GLOB_RECURSE sources_Cryptography Cryptography/*.cpp Cryptography/*.h)
 file(GLOB_RECURSE sources_Logging Logging/*.cpp Logging/*.h)
+file(GLOB_RECURSE sources_Threading Threading/*.cpp Threading/*.h)
 file(GLOB_RECURSE sources_Utilities Utilities/*.cpp Utilities/*.h)
-file(GLOB_RECURSE sources_Configuration Configuration/*.cpp Configuration/*.h)
+
 
 file(GLOB sources_localdir *.cpp *.h)
 
@@ -18,10 +20,11 @@ endif()
 
 set(shared_STAT_SRCS
   ${shared_STAT_SRCS}
+  ${sources_Configuration}
   ${sources_Cryptography}
   ${sources_Logging}
+  ${sources_Threading}
   ${sources_Utilities}
-  ${sources_Configuration}
   ${sources_localdir}
 )
 
@@ -30,10 +33,11 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dep/utf8cpp
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Configuration
   ${CMAKE_CURRENT_SOURCE_DIR}/Cryptography
   ${CMAKE_CURRENT_SOURCE_DIR}/Logging
+  ${CMAKE_CURRENT_SOURCE_DIR}/Threading
   ${CMAKE_CURRENT_SOURCE_DIR}/Utilities
-  ${CMAKE_CURRENT_SOURCE_DIR}/Configuration
   #${ACE_INCLUDE_DIR}
   #${MYSQL_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
