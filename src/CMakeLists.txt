@@ -10,7 +10,7 @@ add_subdirectory(genrev)
 if( SERVER )
 
 add_subdirectory(shared)
-add_subdirectory(droppedserver)
+add_subdirectory(tumorsserver)
 add_subdirectory(gameworld)
 
 endif()

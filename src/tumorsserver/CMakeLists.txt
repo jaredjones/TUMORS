@@ -6,25 +6,25 @@ file(GLOB_RECURSE sources_GameThread GameThread/*.cpp GameThread/*.h)
 file(GLOB sources_localdir *.cpp *.h)
 
 if (USE_PCH)
-  set(droppedserver_PCH_HDR PrecompiledHeaders/serverPCH.h)
-  set(droppedserver_PCH_SRC PrecompiledHeaders/serverPCH.cpp)
+  set(tumorsserver_PCH_HDR PrecompiledHeaders/serverPCH.h)
+  set(tumorsserver_PCH_SRC PrecompiledHeaders/serverPCH.cpp)
 endif()
 
-set(droppedserver_SRCS
-  ${droppedserver_SRCS}
+set(tumorsserver_SRCS
+  ${tumorsserver_SRCS}
   ${sources_GameThread}
   ${sources_localdir}
 )
 
 if( WIN32 )
-  set(droppedserver_SRCS
-    ${droppedserver_SRCS}
+  set(tumorsserver_SRCS
+    ${tumorsserver_SRCS}
     #${sources_windows_Debugging}
   )
   if ( MSVC )
-    set(droppedserver_SRCS
-      ${droppedserver_SRCS}
-      droppedserver.rc
+    set(tumorsserver_SRCS
+      ${tumorsserver_SRCS}
+      tumorsserver.rc
     )
   endif()
 endif()
@@ -43,26 +43,26 @@ include_directories(
 	${OPENSSL_INCLUDE_DIR}
 )
 
-add_executable(droppedserver
-	${droppedserver_SRCS}
-  	${droppedserver_PCH_SRC}
+add_executable(tumorsserver
+	${tumorsserver_SRCS}
+  	${tumorsserver_PCH_SRC}
 )
 
 if( NOT WIN32 )
- 	set_target_properties(droppedserver PROPERTIES
+ 	set_target_properties(tumorsserver PROPERTIES
     	COMPILE_DEFINITIONS _TUMORS_CORE_CONFIG="${CONF_DIR}/tumors.cfg"
 )
 endif()
 
-add_dependencies(droppedserver revision.h)
+add_dependencies(tumorsserver revision.h)
 
 if( UNIX AND NOT NOJEM AND NOT APPLE )
-  set(droppedserver_LINK_FLAGS "-pthread -lncurses ${droppedserver_LINK_FLAGS}")
+  set(tumorsserver_LINK_FLAGS "-pthread -lncurses ${tumorsserver_LINK_FLAGS}")
 endif()
 
-set_target_properties(droppedserver PROPERTIES LINK_FLAGS "${droppedserver_LINK_FLAGS}")
+set_target_properties(tumorsserver PROPERTIES LINK_FLAGS "${tumorsserver_LINK_FLAGS}")
 
-target_link_libraries(droppedserver
+target_link_libraries(tumorsserver
   shared
   gameworld
   ${JEMALLOC_LIBRARY}
@@ -75,12 +75,12 @@ target_link_libraries(droppedserver
 
 if( WIN32 )
   if ( MSVC )
-	add_custom_command(TARGET droppedserver
+	add_custom_command(TARGET tumorsserver
 	POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tumors.cfg ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
     )
   elseif ( MINGW )
-    add_custom_command(TARGET droppedserver
+    add_custom_command(TARGET tumorsserver
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tumors.cfg ${CMAKE_BINARY_DIR}/bin/
     )
@@ -88,14 +88,14 @@ if( WIN32 )
 endif()
 
 if( UNIX )
-	install(TARGETS droppedserver DESTINATION bin)
+	install(TARGETS tumorsserver DESTINATION bin)
 	install(FILES tumors.cfg DESTINATION ${CONF_DIR})
 elseif( WIN32 )
-	install(TARGETS droppedserver DESTINATION "${CMAKE_INSTALL_PREFIX}")
+	install(TARGETS tumorsserver DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	install(FILES tumors.cfg DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()
 
 
 if( USE_PCH )
-	add_cxx_pch(droppedserver ${droppedserver_PCH_HDR} ${droppedserver_PCH_SRC})
+	add_cxx_pch(tumorsserver ${tumorsserver_PCH_HDR} ${tumorsserver_PCH_SRC})
 endif()
