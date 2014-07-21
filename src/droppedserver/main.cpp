@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     if (vm.count("help"))
         return 0;
     
-#ifdef _WIN32
+#ifdef _WIN32_NOTDONEYET
     if (configService.compare("install") == 0)
         return WinServiceInstall() == true ? 0 : 1;
     if (configService.compare("uninstall") == 0)

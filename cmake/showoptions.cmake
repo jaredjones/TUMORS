@@ -1,51 +1,51 @@
 # output generic information about the core and buildtype chosen
 message("")
 if( UNIX )
-  message("* TUMORS buildtype  		: ${CMAKE_BUILD_TYPE}")
+  message("* TUMORS buildtype			: ${CMAKE_BUILD_TYPE}")
 endif()
 message("")
 
 # output information about installation-directories and locations
 
-message("* Install core to        	: ${CMAKE_INSTALL_PREFIX}")
+message("* Install core to			: ${CMAKE_INSTALL_PREFIX}")
 if( UNIX )
-  message("* Install libraries to   	: ${LIBSDIR}")
-  message("* Install configs to     	: ${CONF_DIR}")
+  message("* Install libraries to		: ${LIBSDIR}")
+  message("* Install configs to			: ${CONF_DIR}")
 endif()
 message("")
 
 # Show infomation about the options selected during configuration
 
 if( SERVER )
-  message("* Build server		: Yes (default)")
+  message("* Build server			: Yes (default)")
 else()
-  message("* Build server		: No")
+  message("* Build server			: No")
 endif()
 
 if( USE_PCH )
-  message("* Build server w/PCH		: Yes (default)")
+  message("* Build server w/PCH			: Yes (default)")
 else()
-  message("* Build server w/PCH		: No")
+  message("* Build server w/PCH			: No")
 endif()
 
 if( WITH_WARNINGS )
-  message("* Show all warnings		: Yes")
+  message("* Show all warnings			: Yes")
 else()
-  message("* Show compile-warnings	: No  (default)")
+  message("* Show compile-warnings		: No  (default)")
 endif()
 
 if( WITH_COREDEBUG )
-  message("* Use coreside debug		: Yes")
+  message("* Use coreside debug			: Yes")
   add_definitions(-DTUMORS_DEBUG)
 else()
-  message("* Use coreside debug		: No  (default)")
+  message("* Use coreside debug			: No  (default)")
 endif()
 
 if( WIN32 )
   if( USE_MYSQL_SOURCES )
-    message("* Use MySQL sourcetree	: Yes (default)")
+    message("* Use MySQL sourcetree		: Yes (default)")
   else()
-    message("* Use MySQL sourcetree	: No")
+    message("* Use MySQL sourcetree		: No")
   endif()
 endif( WIN32 )
 

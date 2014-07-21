@@ -77,8 +77,12 @@
 #endif
 #endif
 
-#if PLATFORM == PLATFORM_WIN32
+#if PLATFORM == PLATFORM_WIN32 && PLATFORM != PLATFORM_WIN64
 #define PLATFORM_TEXT "Win32"
+#define ARCH "X86"
+#else if PLATFORM == PLATFORM_WIN64
+#define PLATFORM_TEXT "Win64"
+#define ARCH "X64"
 #endif
 
 #ifdef DEBUG
@@ -87,11 +91,14 @@
 #define CONFIG "Release"
 #endif
 
+#if PLATFORM != PLATFORM_WIN32
 #ifdef _LP64
 #define ARCH "X64"
 #else
 #define ARCH "X86"
 #endif
+#endif
+
 
 #if PLATFORM == PLATFORM_WINDOWS
 #  include <ws2tcpip.h>
