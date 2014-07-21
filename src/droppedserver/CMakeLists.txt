@@ -56,7 +56,7 @@ endif()
 
 add_dependencies(droppedserver revision.h)
 
-if( UNIX AND NOT NOJEM )
+if( UNIX AND NOT NOJEM AND NOT APPLE )
   set(droppedserver_LINK_FLAGS "-pthread -lncurses ${droppedserver_LINK_FLAGS}")
 endif()
 
