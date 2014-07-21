@@ -93,6 +93,16 @@
 #define ARCH "X86"
 #endif
 
+#if PLATFORM == PLATFORM_WINDOWS
+#  include <ws2tcpip.h>
+#else
+#  include <sys/types.h>
+#  include <sys/ioctl.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <unistd.h>
+#  include <netdb.h>
+#endif
 
 #if COMPILER == COMPILER_MICROSOFT
 

@@ -20,8 +20,8 @@ void SetProcessPriority(const std::string logChannel)
 {
 #if defined(_WIN32) || defined(__linux__)
     ///- Handle affinity for multiple processors and process priority
-    uint32 affinity = sConfigMgr->GetIntDefault("UseProcessors", 0);
-    bool highPriority = sConfigMgr->GetBoolDefault("ProcessPriority", false);
+    uint32 affinity = sConfig.GetIntDefault("UseProcessors", 0);
+    bool highPriority = sConfig.GetBoolDefault("ProcessPriority", false);
     
 #ifdef _WIN32 // Windows
     
