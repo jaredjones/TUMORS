@@ -85,6 +85,7 @@
 #define PLATFORM_TEXT "Win64"
 #define ARCH "X64"
 #endif
+#endif
 
 #ifdef DEBUG
 #define CONFIG "Debug"
