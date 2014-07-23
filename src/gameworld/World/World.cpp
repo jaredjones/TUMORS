@@ -1,6 +1,13 @@
 #include "World.h"
 
-void hi()
+std::atomic<bool> World::m_stopEvent(false);
+
+World::World()
 {
-    printf("TEST");
+    
+}
+
+World::~World()
+{
+    
 }

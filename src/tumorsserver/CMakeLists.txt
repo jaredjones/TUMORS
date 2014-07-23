@@ -2,6 +2,7 @@ if( USE_PCH )
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
+file(GLOB_RECURSE sources_CommandLine CommandLine/*.cpp CommandLine/*.h)
 file(GLOB_RECURSE sources_GameThread GameThread/*.cpp GameThread/*.h)
 file(GLOB sources_localdir *.cpp *.h)
 
@@ -12,6 +13,7 @@ endif()
 
 set(tumorsserver_SRCS
   ${tumorsserver_SRCS}
+  ${sources_CommandLine}
   ${sources_GameThread}
   ${sources_localdir}
 )

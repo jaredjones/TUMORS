@@ -17,6 +17,7 @@
 #include "Master.h"
 #include "Common.h"
 #include "Util.h"
+#include "CommandLine/CliRunnable.h"
 #include "Configuration/Config.h"
 #include "Cryptography/OpenSSLCrypto.h"
 #include "Cryptography/BigNumber.h"
@@ -25,6 +26,20 @@
 #include "Threading/ProcessPriority.h"
 
 #include "World/World.h"
+
+#ifdef _WIN32
+#include "ServiceWin32.h"
+char serviceName[] = "TUMORS";
+char serviceLongName[] = "TUMORS Environment";
+char serviceDescription[] = "The Uvora Multiplayer Online Realm Server.";
+/*
+ * -1 - not in service mode
+ *  0 - stopped
+ *  1 - running
+ *  2 - paused
+ */
+int m_ServiceStatus = -1;
+#endif
 
 boost::asio::io_service _ioService;
 boost::asio::deadline_timer _freezeCheckTimer(_ioService);
@@ -66,6 +81,9 @@ int Master::Run()
     // Set signal handlers (this must be done before starting io_service threads,
     // because otherwise they would unblock and exit)
     boost::asio::signal_set signals(_ioService, SIGINT, SIGTERM);
+#if PLATFORM == PLATFORM_WINDOWS
+        signals.add(SIGBREAK);
+#endif
     signals.async_wait(SignalHandler);
     
     // Star the Boost based thread pool
@@ -87,7 +105,16 @@ int Master::Run()
     
     //Initalize Game Settings
     
-    //Signal Handlers
+    // Launch CliRunnable thread
+    std::thread* cliThread = nullptr;
+#ifdef _WIN32
+    if (sConfig.GetBoolDefault("Console.Enable", true) && (m_ServiceStatus == -1)/* need disable console in service mode*/)
+#else
+    if (sConfig.GetBoolDefault("Console.Enable", true))
+#endif
+    {
+        cliThread = new std::thread(CliThread);
+    }
     
     GameRunnable *gRunnable = new GameRunnable();
     gRunnable->start();
@@ -105,9 +132,50 @@ int Master::Run()
     
     //Set DB Value that the game is online
     
+    UVO_LOG_INFO("server.worldserver", "Halting process...");
     
-   /* while(1)
-        std::this_thread::sleep_for(std::chrono::nanoseconds(100000000));*/
+    if (cliThread != nullptr)
+    {
+#ifdef _WIN32
+        
+        // this only way to terminate CLI thread exist at Win32 (alt. way exist only in Windows Vista API)
+        //_exit(1);
+        // send keyboard input to safely unblock the CLI thread
+        INPUT_RECORD b[4];
+        HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+        b[0].EventType = KEY_EVENT;
+        b[0].Event.KeyEvent.bKeyDown = TRUE;
+        b[0].Event.KeyEvent.uChar.AsciiChar = 'X';
+        b[0].Event.KeyEvent.wVirtualKeyCode = 'X';
+        b[0].Event.KeyEvent.wRepeatCount = 1;
+        
+        b[1].EventType = KEY_EVENT;
+        b[1].Event.KeyEvent.bKeyDown = FALSE;
+        b[1].Event.KeyEvent.uChar.AsciiChar = 'X';
+        b[1].Event.KeyEvent.wVirtualKeyCode = 'X';
+        b[1].Event.KeyEvent.wRepeatCount = 1;
+        
+        b[2].EventType = KEY_EVENT;
+        b[2].Event.KeyEvent.bKeyDown = TRUE;
+        b[2].Event.KeyEvent.dwControlKeyState = 0;
+        b[2].Event.KeyEvent.uChar.AsciiChar = '\r';
+        b[2].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
+        b[2].Event.KeyEvent.wRepeatCount = 1;
+        b[2].Event.KeyEvent.wVirtualScanCode = 0x1c;
+        
+        b[3].EventType = KEY_EVENT;
+        b[3].Event.KeyEvent.bKeyDown = FALSE;
+        b[3].Event.KeyEvent.dwControlKeyState = 0;
+        b[3].Event.KeyEvent.uChar.AsciiChar = '\r';
+        b[3].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
+        b[3].Event.KeyEvent.wVirtualScanCode = 0x1c;
+        b[3].Event.KeyEvent.wRepeatCount = 1;
+        DWORD numb;
+        WriteConsoleInput(hStdIn, b, 4, &numb);
+#endif
+        cliThread->join();
+        delete cliThread;
+    }
     
     return 0;
 }
@@ -120,6 +188,9 @@ void SignalHandler(const boost::system::error_code &error, int signalNumber)
         {
             case SIGINT:
             case SIGTERM:
+#if PLATFORM == PLATFORM_WINDOWS
+            case SIGBREAK:
+#endif
                 //ALERT: NEED OT PROGRAM THIS
                 //World::StopNow(SHUTDOWN_EXIT_CODE);
                 break;

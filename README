@@ -13,7 +13,7 @@ OS X Instructions:
 1) Install HomeBrew
 2) Type: brew update
 3) Type: brew install boost readline openssl
-4) Type: brew link -f openssl
+4) Type: brew link -f openssl readline
 5) git clone the repo
 6) Run the shell script found in the TUMORS Folder. Change directories to the TUMORS folder
 and then type sh ./CompileForOSX.sh

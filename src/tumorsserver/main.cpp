@@ -25,20 +25,6 @@ using namespace boost::program_options;
 #define _TUMORS_BANNER "TUMORS :: The Uvora Online Multiplayer Realm Server"
 #endif
 
-#ifdef _WIN32
-#include "ServiceWin32.h"
-char serviceName[] = "TUMORS";
-char serviceLongName[] = "TUMORS Environment";
-char serviceDescription[] = "The Uvora Multiplayer Online Realm Server.";
-/*
- * -1 - not in service mode
- *  0 - stopped
- *  1 - running
- *  2 - paused
- */
-int m_ServiceStatus = -1;
-#endif
-
 variables_map GetConsoleArguments(int argc, char** argv, std::string& configFile, std::string& configService)
 {
     //Silences warning about configService not be used if the OS is not Windows
