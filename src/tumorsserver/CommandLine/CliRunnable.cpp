@@ -62,4 +62,5 @@ void CliThread()
     // print this here the first time
     // later it will be printed after command queue updates
     printf("TC>");
+    fflush(stdout);
 }

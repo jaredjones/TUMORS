@@ -70,7 +70,9 @@ int Master::Run()
     if (!pidFile.empty())
     {
         if (uint32 pid = CreatePIDFile(pidFile))
+        {
             UVO_LOG_INFO("server.worldserver", "Daemon PID: %u\n", pid);
+        }
         else
         {
             UVO_LOG_ERROR("server.worldserver", "Cannot create PID File %s.\n", pidFile.c_str());
@@ -104,7 +106,7 @@ int Master::Run()
     //Set DB Value to Show OFFLINE
     
     //Initalize Game Settings
-    
+
     // Launch CliRunnable thread
     std::thread* cliThread = nullptr;
 #ifdef _WIN32
