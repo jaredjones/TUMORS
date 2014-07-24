@@ -5,6 +5,7 @@ endif()
 file(GLOB_RECURSE sources_Configuration Configuration/*.cpp Configuration/*.h)
 file(GLOB_RECURSE sources_Cryptography Cryptography/*.cpp Cryptography/*.h)
 file(GLOB_RECURSE sources_Logging Logging/*.cpp Logging/*.h)
+file(GLOB_RECURSE sources_Networking Networking/*.cpp Networking/*.h)
 file(GLOB_RECURSE sources_Threading Threading/*.cpp Threading/*.h)
 file(GLOB_RECURSE sources_Utilities Utilities/*.cpp Utilities/*.h)
 
@@ -23,6 +24,7 @@ set(shared_STAT_SRCS
   ${sources_Configuration}
   ${sources_Cryptography}
   ${sources_Logging}
+  ${sources_Networking}
   ${sources_Threading}
   ${sources_Utilities}
   ${sources_localdir}

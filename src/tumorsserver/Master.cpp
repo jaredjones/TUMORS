@@ -196,7 +196,6 @@ void WorldUpdateLoop()
     
     uint64 prevSleepTime = 0;// used for balanced full tick time length near WORLD_SLEEP_CONST
     
-    //THIS SHOULD REALLY BE WHILE !SGAME::ISSTOPPED
     while (!World::IsStopped())
     {
         ++World::m_worldLoopCounter;
