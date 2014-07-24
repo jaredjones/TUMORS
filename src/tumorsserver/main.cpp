@@ -71,8 +71,8 @@ int main(int argc, char** argv)
     auto vm = GetConsoleArguments(argc, argv, configFile, configService);
     if (vm.count("help"))
         return 0;
-    
-#ifdef _WIN32_NOTDONEYET
+
+#ifdef _WIN32_NOT_IMPLEMENTED_YET
     if (configService.compare("install") == 0)
         return WinServiceInstall() == true ? 0 : 1;
     if (configService.compare("uninstall") == 0)
@@ -80,7 +80,6 @@ int main(int argc, char** argv)
     if (configService.compare("run") == 0)
         WinServiceRun();
 #endif
-    
     if (!sConfig.LoadInitial(configFile.c_str()))
     {
         printf("Invalid or missing configuration file : %s\n", configFile.c_str());

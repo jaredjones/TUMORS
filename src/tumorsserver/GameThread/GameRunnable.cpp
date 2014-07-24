@@ -3,6 +3,7 @@
 #include "GameRunnable.h"
 #include "Common.h"
 #include "Timer.h"
+#include "World.h"
 
 #define WORLD_SLEEP_CONST 50
 
@@ -21,7 +22,7 @@ void GameRunnable::run()
 
 
     //THIS SHOULD REALLY BE WHILE !SGAME::ISSTOPPED
-    while (!m_stop)
+    while (!World::IsStopped())
     {
         //Update World LoopCounter
         realCurrTime = getMSTime();

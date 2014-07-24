@@ -70,6 +70,54 @@ void utf8printf(FILE* out, const char *str, ...)
     va_end(ap);
 }
 
+bool utf8ToConsole(const std::string& utf8str, std::string& conStr)
+{
+#if PLATFORM == PLATFORM_WINDOWS
+    std::wstring wstr;
+    if (!Utf8toWStr(utf8str, wstr))
+        return false;
+    
+    conStr.resize(wstr.size());
+    CharToOemBuffW(&wstr[0], &conStr[0], wstr.size());
+#else
+    // not implemented yet
+    conStr = utf8str;
+#endif
+    
+    return true;
+}
+
+bool consoleToUtf8(const std::string& conStr, std::string& utf8str)
+{
+#if PLATFORM == PLATFORM_WINDOWS
+    std::wstring wstr;
+    wstr.resize(conStr.size());
+    OemToCharBuffW(&conStr[0], &wstr[0], conStr.size());
+    
+    return WStrToUtf8(wstr, utf8str);
+#else
+    // not implemented yet
+    utf8str = conStr;
+    return true;
+#endif
+}
+
+bool Utf8FitTo(const std::string& str, std::wstring search)
+{
+    std::wstring temp;
+    
+    if (!Utf8toWStr(str, temp))
+        return false;
+    
+    // converting to lower case
+    wstrToLower( temp );
+    
+    if (temp.find(search) == std::wstring::npos)
+        return false;
+    
+    return true;
+}
+
 void vutf8printf(FILE* out, const char *str, va_list* ap)
 {
 #if PLATFORM == PLATFORM_WINDOWS

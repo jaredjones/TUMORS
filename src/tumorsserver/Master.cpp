@@ -63,7 +63,7 @@ int Master::Run()
     UVO_LOG_INFO("server.worldserver", "   $$ |   $$ \\__$$ |$$ |$$$/ $$ |$$ \\__$$ |$$ |  $$ |/  \\__$$ |");
     UVO_LOG_INFO("server.worldserver", "   $$ |   $$    $$/ $$ | $/  $$ |$$    $$/ $$ |  $$ |$$    $$/ ");
     UVO_LOG_INFO("server.worldserver", "   $$/     $$$$$$/  $$/      $$/  $$$$$$/  $$/   $$/  $$$$$$/  ");
-    UVO_LOG_INFO("server.worldserver", "       http://uvora.com");
+    UVO_LOG_INFO("server.worldserver", "                                    http://uvora.com");
     
     
     std::string pidFile = sConfig.GetStringDefault("PID_FILE", "");
@@ -118,14 +118,9 @@ int Master::Run()
         cliThread = new std::thread(CliThread);
     }
     
+    
     GameRunnable *gRunnable = new GameRunnable();
     gRunnable->start();
-    gRunnable->join();
-    //Make priority highest
-    
-    //Create CLIRunnable Thread based on Config Options
-    
-    //Setup processor affinity for linux and windows from config file.
     
     //Create a freeze-thread detector
     
@@ -133,6 +128,16 @@ int Master::Run()
     //Start the Game Socket Manager
     
     //Set DB Value that the game is online
+    
+    
+    // Shutdown starts here
+    gRunnable->join();
+    _ioService.stop();
+    
+    for (auto& thread : threadPool)
+    {
+        thread.join();
+    }
     
     UVO_LOG_INFO("server.worldserver", "Halting process...");
     
@@ -179,7 +184,9 @@ int Master::Run()
         delete cliThread;
     }
     
-    return 0;
+    OpenSSLCrypto::threadsCleanup();
+    
+    return World::GetExitCode();
 }
 
 void SignalHandler(const boost::system::error_code &error, int signalNumber)
@@ -193,9 +200,8 @@ void SignalHandler(const boost::system::error_code &error, int signalNumber)
 #if PLATFORM == PLATFORM_WINDOWS
             case SIGBREAK:
 #endif
-                //ALERT: NEED OT PROGRAM THIS
-                //World::StopNow(SHUTDOWN_EXIT_CODE);
-                break;
+                World::StopNow(SHUTDOWN_EXIT_CODE);
+            break;
         }
     }
 }
