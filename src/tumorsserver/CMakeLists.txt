@@ -3,7 +3,6 @@ if( USE_PCH )
 endif()
 
 file(GLOB_RECURSE sources_CommandLine CommandLine/*.cpp CommandLine/*.h)
-file(GLOB_RECURSE sources_GameThread GameThread/*.cpp GameThread/*.h)
 file(GLOB sources_localdir *.cpp *.h)
 
 if (USE_PCH)
@@ -14,7 +13,6 @@ endif()
 set(tumorsserver_SRCS
   ${tumorsserver_SRCS}
   ${sources_CommandLine}
-  ${sources_GameThread}
   ${sources_localdir}
 )
 

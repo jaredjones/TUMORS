@@ -19,6 +19,13 @@ enum ShutdownExitCode
     RESTART_EXIT_CODE  = 2
 };
 
+/// Configuration elements
+enum WorldIntConfigs
+{
+    CONFIG_WORLD_PORT = 0,
+    END_CONFIG_INT_MAX
+};
+
 /// Storage class for commands issued for delayed execution
 struct CliCommandHolder
 {
@@ -53,12 +60,30 @@ public:
         return &instance;
     }
     
+    static std::atomic<uint32> m_worldLoopCounter;
+    
+    void SetInitialWorldSettings();
+    void LoadConfigSettings(bool reload = false);
+    
     /// Are we in the middle of a shutdown?
     static uint8 GetExitCode() { return m_ExitCode; }
     static bool IsStopped() { return m_stopEvent; }
     static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
     
-     void QueueCliCommand(CliCommandHolder* commandHolder) { cliCmdQueue.add(commandHolder); }
+    void QueueCliCommand(CliCommandHolder* commandHolder) { cliCmdQueue.add(commandHolder); }
+    
+    /// Set a server configuration element (see #WorldConfigs)
+    void setIntConfig(WorldIntConfigs index, uint32 value)
+    {
+        if (index < END_CONFIG_INT_MAX)
+            m_int_configs[index] = value;
+    }
+    
+    /// Get a server configuration element (see #WorldConfigs)
+    uint32 getIntConfig(WorldIntConfigs index) const
+    {
+        return index < END_CONFIG_INT_MAX ? m_int_configs[index] : 0;
+    }
     
 private:
     World();
@@ -66,6 +91,8 @@ private:
     
     static std::atomic<bool> m_stopEvent;
     static uint8 m_ExitCode;
+    
+    uint32 m_int_configs[END_CONFIG_INT_MAX];
     
     // CLI command holder to be thread safe
     LockedQueue<CliCommandHolder*> cliCmdQueue;
