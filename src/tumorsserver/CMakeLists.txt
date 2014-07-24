@@ -40,6 +40,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/src/shared/Utilities
 	${CMAKE_SOURCE_DIR}/src/gameworld
 	${CMAKE_SOURCE_DIR}/src/gameworld/World
+	${CMAKE_SOURCE_DIR}/src/gameworld/Server
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${OPENSSL_INCLUDE_DIR}
 )

@@ -15,6 +15,7 @@
 #include <boost/asio/deadline_timer.hpp>
 
 #include "Master.h"
+#include "AsyncAcceptor.h"
 #include "Common.h"
 #include "Util.h"
 #include "CommandLine/CliRunnable.h"
@@ -26,6 +27,7 @@
 #include "Timer.h"
 
 #include "World/World.h"
+#include "Server/WorldSocket.h"
 
 #ifdef _WIN32
 #include "ServiceWin32.h"
@@ -126,6 +128,7 @@ int Master::Run()
     std::string worldListener = sConfig.GetStringDefault("BindIP", "0.0.0.0");
     bool tcpNoDelay = sConfig.GetBoolDefault("Network.TcpNodelay", "true");
     
+    AsyncAcceptor<WorldSocket> worldAcceptor(_ioService, worldListener, worldPort, tcpNoDelay);
     
     UVO_LOG_INFO("server.worldserver", "TUMORS (worldserver) ready...");
     

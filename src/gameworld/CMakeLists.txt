@@ -2,6 +2,7 @@ if( USE_PCH )
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
+file(GLOB_RECURSE sources_Server Server/*.cpp Server/*.h)
 file(GLOB_RECURSE sources_World World/*.cpp World/*.h)
 
 file(GLOB sources_localdir *.cpp *.h)
@@ -14,6 +15,7 @@ endif()
 
 set(gameworld_SRCS
   ${gameworld_SRCS}
+  ${sources_Server}
   ${sources_World}
   ${sources_localdir}
 )
