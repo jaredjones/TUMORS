@@ -56,6 +56,8 @@ private:
     
     tcp::socket _socket;
     
+    char _readBuffer[4096];
+    
     uint32 _authSeed;
     
     uint32 _OverSpeedPings;
