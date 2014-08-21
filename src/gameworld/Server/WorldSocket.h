@@ -9,10 +9,13 @@
 #ifndef TUMORS_WorldSocket_h
 #define TUMORS_WorldSocket_h
 
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/streambuf.hpp>
+#include <chrono>
 
-#include <Common.h>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/buffer.hpp>
+
+#include "Common.h"
+#include "Socket.h"
 
 using boost::asio::ip::tcp;
 
@@ -22,27 +25,37 @@ struct ClientPktHeader
 {
     uint16 size;
     uint32 cmd;
+    //bool isValid() const { return size >= 4 && size < 10240 && cmd < NUM_MSG_TYPES; }
 };
 
 #pragma pack(pop)
 
-class WorldSocket : public std::enable_shared_from_this<WorldSocket>
+struct WorldPacketBuffer
 {
+    typedef boost::asio::const_buffer value_type;
+    typedef boost::asio::const_buffer const* const_iterator;
+    
+};
+
+class WorldSocket : public Socket<WorldSocket, WorldPacketBuffer>
+{
+    typedef Socket<WorldSocket, WorldPacketBuffer> Base;
 public:
     WorldSocket(tcp::socket&& socket);
     
     WorldSocket(WorldSocket const& right) = delete;
     WorldSocket& operator=(WorldSocket const& right) = delete;
     
-    void Start();
+    void Start() override;
     
-    std::string GetRemoteIpAddress() const { return _socket.remote_endpoint().address().to_string(); };
-    uint16 GetRemotePort() const { return _socket.remote_endpoint().port(); }
+    void CloseSocket() override;
     
-    void CloseSocket() { _socket.close(); };
-    bool IsOpen() { return _socket.is_open(); };
+    using Base::AsyncWrite;
+    //void AsyncWrite(WorldPacket& packet);
     
-    //void AsyncWrite(WorldPacket const& packet);
+protected:
+    void ReadHeaderHandler() override;
+    void ReadDataHandler() override;
     
 private:
     void HandleSendAuthSession();
@@ -51,15 +64,9 @@ private:
     
     //void HandlePing(WorldPacket& recvPacket);
     
-    void AsyncReadHeader();
-    void AsyncReadData(size_t dataSize);
-    
-    tcp::socket _socket;
-    
-    char _readBuffer[4096];
-    
     uint32 _authSeed;
     
+    std::chrono::steady_clock::time_point _LastPingTime;
     uint32 _OverSpeedPings;
     
     //Temporary befere session is coded

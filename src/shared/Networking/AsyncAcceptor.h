@@ -9,6 +9,7 @@
 #ifndef TUMORS_AsyncAcceptor_h
 #define TUMORS_AsyncAcceptor_h
 
+#include "Log.h"
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -40,8 +41,15 @@ private:
         {
             if (!error)
             {
-                // this-> is required here to fix an segmentation fault in gcc 4.7.2 - reason is lambdas in a templated class
+                try
+                {
+                    // this-> is required here to fix an segmentation fault in gcc 4.7.2 - reason is lambdas in a templated class
                     std::make_shared<T>(std::move(this->_socket))->Start();
+                }
+                catch (boost::system::system_error const& err)
+                {
+                    UVO_LOG_INFO("network", "Failed to retrieve the client's remote address: %s", err.what());
+                }
             }
                                    
             // lets slap some more this-> on this so we can fix this bug with gcc 4.7.2 throwing internals in yo face
