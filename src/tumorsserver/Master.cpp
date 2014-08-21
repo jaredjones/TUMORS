@@ -47,10 +47,15 @@ int m_ServiceStatus = -1;
 
 boost::asio::io_service _ioService;
 boost::asio::deadline_timer _freezeCheckTimer(_ioService);
+uint32 _worldLoopCounter(0);
+uint32 _lastChangeMsTime(0);
+uint32 _maxCoreStuckTimeInMs(0);
 
 //Function prototypes
 void SignalHandler(const boost::system::error_code &error, int signalNumber);
+void ShutdownThreadPool(std::vector<std::thread>& threadPool);
 void WorldUpdateLoop();
+void FreezeDetectorHandler(const boost::system::error_code& error);
 
 int Master::Run()
 {
@@ -130,17 +135,20 @@ int Master::Run()
     
     AsyncAcceptor<WorldSocket> worldAcceptor(_ioService, worldListener, worldPort, tcpNoDelay);
     
-    UVO_LOG_INFO("server.worldserver", "TUMORS (worldserver) ready...");
+    if (int coreStuckTime = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
+    {
+        _maxCoreStuckTimeInMs = coreStuckTime * 1000;
+        _freezeCheckTimer.expires_from_now(boost::posix_time::seconds(5));
+        _freezeCheckTimer.async_wait(FreezeDetectorHandler);
+        UVO_LOG_INFO("server.worldserver", "Starting up anti-freeze thread (%u seconds max stuck time)...", coreStuckTime);
+    }
     
+    UVO_LOG_INFO("server.worldserver", "TUMORS (worldserver) ready...");
+
     WorldUpdateLoop();
     
     // Shutdown starts here
-    _ioService.stop();
-    
-    for (auto& thread : threadPool)
-    {
-        thread.join();
-    }
+    ShutdownThreadPool(threadPool);
     
     UVO_LOG_INFO("server.worldserver", "\nHalting process...");
     
@@ -156,6 +164,13 @@ int Master::Run()
     OpenSSLCrypto::threadsCleanup();
     
     return World::GetExitCode();
+}
+
+void ShutdownThreadPool(std::vector<std::thread>& threadPool)
+{
+    _ioService.stop();
+    for (auto& thread : threadPool)
+        thread.join();
 }
 
 void WorldUpdateLoop()
@@ -174,7 +189,6 @@ void WorldUpdateLoop()
         
         //Update World TimeDifference
         //sWorld->Update(diff);
-        
         realPrevTime = realCurrTime;
         
         if ( diff <= WORLD_SLEEP_CONST + prevSleepTime)
@@ -209,5 +223,26 @@ void SignalHandler(const boost::system::error_code &error, int signalNumber)
             break;
         }
     }
+}
+
+void FreezeDetectorHandler(const boost::system::error_code& error)
+{
+    if (error)
+        return;
+    
+    uint32 curtime = getMSTime();
+    uint32 worldLoopCounter = sWorld->m_worldLoopCounter;
+    if (_worldLoopCounter != worldLoopCounter)
+    {
+        _lastChangeMsTime = curtime;
+        _worldLoopCounter = worldLoopCounter;
+    }
+    else if (getMSTimeDiff(_lastChangeMsTime, curtime) > _maxCoreStuckTimeInMs)
+    {
+        UVO_LOG_ERROR("server.worldserver", "World Thread Hangs, Killing Server!");
+        assert(false);
+    }
+    _freezeCheckTimer.expires_from_now(boost::posix_time::seconds(1));
+    _freezeCheckTimer.async_wait(FreezeDetectorHandler);
 }
 

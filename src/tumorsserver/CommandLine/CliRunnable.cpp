@@ -102,8 +102,9 @@ void CliThread()
     
     // print this here the first time
     // later it will be printed after command queue updates
-    //printf("TUMORS>");
-    
+#ifdef _WIN32
+    printf("TUMORS>");
+#endif
     ///- As long as the World is running (no World::m_stopEvent), get the command line and handle it
     while (!World::IsStopped())
     {
