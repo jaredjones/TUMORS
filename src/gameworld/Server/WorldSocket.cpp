@@ -31,12 +31,18 @@ void WorldSocket::HandleSendAuthSession()
 
 void WorldSocket::ReadHeaderHandler()
 {
-    
+    GetHeaderBuffer();
+    GetHeaderSize();
+    for (int i = 0; i < GetHeaderSize(); i++)
+    {
+        printf("%d\n", GetHeaderBuffer()[i]);
+    }
+    AsyncReadHeader();
 }
 
 void WorldSocket::ReadDataHandler()
 {
-    
+    printf("HI2\n");
 }
 
 void WorldSocket::CloseSocket()
