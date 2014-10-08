@@ -25,21 +25,15 @@ struct ClientPktHeader
 {
     uint16 size;
     uint32 cmd;
-    //bool isValid() const { return size >= 4 && size < 10240 && cmd < NUM_MSG_TYPES; }
+    
+    bool IsValidSize() const { return size >= 4 && size < 10240; }
+    //bool IsValidOpcode() const { return cmd < NUM_MSG_TYPES; }
 };
 
 #pragma pack(pop)
 
-struct WorldPacketBuffer
+class WorldSocket : public Socket<WorldSocket>
 {
-    typedef boost::asio::const_buffer value_type;
-    typedef boost::asio::const_buffer const* const_iterator;
-    
-};
-
-class WorldSocket : public Socket<WorldSocket, WorldPacketBuffer>
-{
-    typedef Socket<WorldSocket, WorldPacketBuffer> Base;
 public:
     WorldSocket(tcp::socket&& socket);
     
@@ -48,14 +42,12 @@ public:
     
     void Start() override;
     
-    void CloseSocket() override;
-    
-    using Base::AsyncWrite;
-    //void AsyncWrite(WorldPacket& packet);
+    //void SendPacket(WorldPacket& packet);
     
 protected:
-    void ReadHeaderHandler() override;
-    void ReadDataHandler() override;
+    void ReadHandler() override;
+    bool ReadHeaderHandler();
+    bool ReadDataHandler();
     
 private:
     void HandleSendAuthSession();
@@ -65,11 +57,15 @@ private:
     //void HandlePing(WorldPacket& recvPacket);
     
     uint32 _authSeed;
+    //AuthCrypt _authCrypt;
     
     std::chrono::steady_clock::time_point _LastPingTime;
     uint32 _OverSpeedPings;
     
-    //Temporary befere session is coded
     void* _worldSession;
+    //WorldSession* _worldSession;
+    
+    MessageBuffer _headerBuffer;
+    MessageBuffer _packetBuffer;
 };
 #endif

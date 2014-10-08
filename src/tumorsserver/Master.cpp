@@ -15,7 +15,7 @@
 #include <boost/asio/deadline_timer.hpp>
 
 #include "Master.h"
-#include "AsyncAcceptor.h"
+#include "WorldSocketMgr.h"
 #include "Common.h"
 #include "Util.h"
 #include "CommandLine/CliRunnable.h"
@@ -132,9 +132,9 @@ int Master::Run()
     
     uint16 worldPort = uint16(sWorld->getIntConfig(CONFIG_WORLD_PORT));
     std::string worldListener = sConfig.GetStringDefault("BindIP", "0.0.0.0");
-    bool tcpNoDelay = sConfig.GetBoolDefault("Network.TcpNodelay", "true");
+    sWorldSocketMgr.StartNetwork(_ioService, worldListener, worldPort);
     
-    AsyncAcceptor<WorldSocket> worldAcceptor(_ioService, worldListener, worldPort, tcpNoDelay);
+    //AsyncAcceptor<WorldSocket> worldAcceptor(_ioService, worldListener, worldPort, tcpNoDelay);
     
     if (int coreStuckTime = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
     {
@@ -158,6 +158,41 @@ int Master::Run()
     OpenSSLCrypto::threadsCleanup();
     
     return World::GetExitCode();
+}
+
+void WorldUpdateLoop()
+{
+    uint64 realCurrTime = 0;
+    uint64 realPrevTime = getMSTime();
+    
+    uint64 prevSleepTime = 0;// used for balanced full tick time length near WORLD_SLEEP_CONST
+    
+    while (!World::IsStopped())
+    {
+        ++World::m_worldLoopCounter;
+        realCurrTime = getMSTime();
+        
+        uint64 diff = getMSTimeDiff(realPrevTime, realCurrTime);
+        
+        //Update World TimeDifference
+        //sWorld->Update(diff);
+        realPrevTime = realCurrTime;
+        
+        if ( diff <= WORLD_SLEEP_CONST + prevSleepTime)
+        {
+            prevSleepTime = WORLD_SLEEP_CONST + prevSleepTime - diff;
+            std::this_thread::sleep_for(std::chrono::milliseconds(prevSleepTime));
+        }
+        else
+            prevSleepTime = 0;
+#ifdef _WIN32
+        if (m_ServiceStatus == 0)
+            World::StopNow(SHUTDOWN_EXIT_CODE);
+        
+        while (m_ServiceStatus == 2)
+            Sleep(1000);
+#endif
+    }
 }
 
 void ShutdownThreadPool(std::vector<std::thread>& threadPool)
@@ -218,41 +253,6 @@ void ShutdownCLIThread(std::thread* cliThread)
 #endif
         cliThread->join();
         delete cliThread;
-    }
-}
-
-void WorldUpdateLoop()
-{
-    uint64 realCurrTime = 0;
-    uint64 realPrevTime = getMSTime();
-    
-    uint64 prevSleepTime = 0;// used for balanced full tick time length near WORLD_SLEEP_CONST
-    
-    while (!World::IsStopped())
-    {
-        ++World::m_worldLoopCounter;
-        realCurrTime = getMSTime();
-        
-        uint64 diff = getMSTimeDiff(realPrevTime, realCurrTime);
-        
-        //Update World TimeDifference
-        //sWorld->Update(diff);
-        realPrevTime = realCurrTime;
-        
-        if ( diff <= WORLD_SLEEP_CONST + prevSleepTime)
-        {
-            prevSleepTime = WORLD_SLEEP_CONST + prevSleepTime - diff;
-            std::this_thread::sleep_for(std::chrono::milliseconds(prevSleepTime));
-        }
-        else
-            prevSleepTime = 0;
-#ifdef _WIN32
-        if (m_ServiceStatus == 0)
-            World::StopNow(SHUTDOWN_EXIT_CODE);
-        
-        while (m_ServiceStatus == 2)
-            Sleep(1000);
-#endif
     }
 }
 
