@@ -15,13 +15,15 @@
 using boost::asio::ip::tcp;
 
 WorldSocket::WorldSocket(tcp::socket&& socket)
-: Socket(std::move(socket), sizeof(ClientPktHeader)), _authSeed(rand()), _OverSpeedPings(0), _worldSession(nullptr)
+: Socket(std::move(socket)), _authSeed(rand()), _OverSpeedPings(0), _worldSession(nullptr)
 {
+    _headerBuffer.Resize(sizeof(ClientPktHeader));
 }
 
 void WorldSocket::Start()
 {
-    AsyncReadHeader();
+    AsyncRead();
+    HandleSendAuthSession();
 }
 
 void WorldSocket::HandleSendAuthSession()
@@ -29,23 +31,24 @@ void WorldSocket::HandleSendAuthSession()
     
 }
 
-void WorldSocket::ReadHeaderHandler()
+void WorldSocket::ReadHandler()
 {
-    GetHeaderBuffer();
-    GetHeaderSize();
-    for (int i = 0; i < GetHeaderSize(); i++)
-    {
-        printf("%d\n", GetHeaderBuffer()[i]);
-    }
-    AsyncReadHeader();
+    if (!IsOpen())
+        return;
 }
 
-void WorldSocket::ReadDataHandler()
+bool WorldSocket::ReadHeaderHandler()
 {
-    printf("HI2\n");
+    return true;
 }
 
-void WorldSocket::CloseSocket()
+bool WorldSocket::ReadDataHandler()
 {
-    Socket::CloseSocket();
+    return true;
 }
+
+void WorldSocket::SendAuthResponseError(uint8 code)
+{
+    
+}
+
