@@ -34,6 +34,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/src/shared
 	${CMAKE_SOURCE_DIR}/src/shared/Configuration
 	${CMAKE_SOURCE_DIR}/src/shared/Cryptography
+	${CMAKE_SOURCE_DIR}/src/shared/Debugging
 	${CMAKE_SOURCE_DIR}/src/shared/Logging
 	${CMAKE_SOURCE_DIR}/src/shared/Networking
 	${CMAKE_SOURCE_DIR}/src/shared/Threading

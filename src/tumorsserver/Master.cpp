@@ -22,6 +22,7 @@
 #include "Configuration/Config.h"
 #include "Cryptography/OpenSSLCrypto.h"
 #include "Cryptography/BigNumber.h"
+#include "Debugging/Errors.h"
 #include "Logging/Log.h"
 #include "Threading/ProcessPriority.h"
 #include "Timer.h"
@@ -176,6 +177,7 @@ void WorldUpdateLoop()
         
         //Update World TimeDifference
         //sWorld->Update(diff);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
         realPrevTime = realCurrTime;
         
         if ( diff <= WORLD_SLEEP_CONST + prevSleepTime)
@@ -288,7 +290,7 @@ void FreezeDetectorHandler(const boost::system::error_code& error)
     else if (getMSTimeDiff(_lastChangeMsTime, curtime) > _maxCoreStuckTimeInMs)
     {
         UVO_LOG_ERROR("server.worldserver", "World Thread Hangs, Killing Server!");
-        assert(false);
+        ASSERT(false);
     }
     _freezeCheckTimer.expires_from_now(boost::posix_time::seconds(1));
     _freezeCheckTimer.async_wait(FreezeDetectorHandler);
