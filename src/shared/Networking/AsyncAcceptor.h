@@ -16,18 +16,20 @@ using boost::asio::ip::tcp;
 
 class AsyncAcceptor
 {
+private:
+    tcp::acceptor _acceptor;
+    tcp::socket _socket;
 public:
     typedef void(*ManagerAcceptHandler)(tcp::socket&& newSocket);
+    template <class T>
+    void AsyncAccept();
     
     AsyncAcceptor(boost::asio::io_service& ioService, std::string const& bindIp, uint16 port) :
     _acceptor(ioService, tcp::endpoint(boost::asio::ip::address::from_string(bindIp), port)),
     _socket(ioService)
     {
-        //Nothing
+        //Default constructor override
     }
-    
-    template <class T>
-    void AsyncAccept();
     
     void AsyncAcceptManaged(ManagerAcceptHandler mgrHandler)
     {
@@ -37,6 +39,7 @@ public:
             {
                 try
                 {
+                    //NOTE: http://www.vbexplorer.com/VBExplorer/tcpdoc8.html#top
                     _socket.non_blocking(true);
                     mgrHandler(std::move(_socket));
                 }
@@ -44,15 +47,10 @@ public:
                 {
                     UVO_LOG_INFO("network", "Failed to initialize client's socket %s", err.what());
                 }
-        }
-                                   
+            }
             AsyncAcceptManaged(mgrHandler);
         });
     }
-    
-private:
-    tcp::acceptor _acceptor;
-    tcp::socket _socket;
 };
 
 template<class T>
@@ -64,7 +62,7 @@ void AsyncAcceptor::AsyncAccept()
         {
             try
             {
-                // this-> is required here to fix an segmentation fault in gcc 4.7.2 - reason is lambdas in a templated class
+                // this-> is required here to fix a segmentation fault in gcc 4.7.2 - Reason: lambdas in a templated class
                 std::make_shared<T>(std::move(this->_socket))->Start();
             }
             catch (boost::system::system_error const& err)

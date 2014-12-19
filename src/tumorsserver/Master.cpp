@@ -135,7 +135,6 @@ int Master::Run()
     std::string worldListener = sConfig.GetStringDefault("BindIP", "0.0.0.0");
     sWorldSocketMgr.StartNetwork(_ioService, worldListener, worldPort);
     
-    //AsyncAcceptor<WorldSocket> worldAcceptor(_ioService, worldListener, worldPort, tcpNoDelay);
     
     if (int coreStuckTime = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
     {

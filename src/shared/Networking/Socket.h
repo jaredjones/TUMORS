@@ -14,10 +14,13 @@
 #include <boost/asio/write.hpp>
 #include <boost/asio/read.hpp>
 
+
 using boost::asio::ip::tcp;
 
 #define READ_BLOCK_SIZE 4096
-#define TC_SOCKET_USE_IOCP BOOST_ASIO_HAS_IOCP
+#ifdef BOOST_ASIO_HAS_IOCP
+#define TC_SOCKET_USE_IOCP
+#endif
 
 template<class T>
 class Socket : public std::enable_shared_from_this<T>
@@ -40,18 +43,18 @@ public:
     virtual bool Update()
     {
         if (!IsOpen())
-            return false;
+        return false;
         
 #ifndef TC_SOCKET_USE_IOCP
         std::unique_lock<std::mutex> guard(_writeLock, std::try_to_lock);
         if (!guard)
-            return true;
+        return true;
         
         if (_isWritingAsync || (!_writeBuffer.GetActiveSize() && _writeQueue.empty()))
-            return true;
+        return true;
         
         for (; WriteHandler(guard);)
-            ;
+        ;
 #endif
         
         return true;
@@ -70,7 +73,7 @@ public:
     void AsyncRead()
     {
         if (!IsOpen())
-            return;
+        return;
         
         _readBuffer.Normalize();
         _socket.async_read_some(boost::asio::buffer(_readBuffer.GetWritePointer(), READ_BLOCK_SIZE),
@@ -80,7 +83,7 @@ public:
     void ReadData(std::size_t size)
     {
         if (!IsOpen())
-            return;
+        return;
         
         boost::system::error_code error;
         
@@ -90,7 +93,7 @@ public:
         
         if (error || bytesRead != size)
         {
-            TC_LOG_DEBUG("network", "Socket::ReadData: %s errored with: %i (%s)", GetRemoteIpAddress().to_string().c_str(), error.value(),
+            UVO_LOG_DEBUG("network", "Socket::ReadData: %s errored with: %i (%s)", GetRemoteIpAddress().to_string().c_str(), error.value(),
                          error.message().c_str());
             
             CloseSocket();
@@ -113,13 +116,13 @@ public:
     void CloseSocket()
     {
         if (_closed.exchange(true))
-            return;
+        return;
         
         boost::system::error_code shutdownError;
         _socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
         if (shutdownError)
-            UVO_LOG_DEBUG("network", "Socket::CloseSocket: %s errored when shutting down socket: %i (%s)", GetRemoteIpAddress().to_string().c_str(),
-                         shutdownError.value(), shutdownError.message().c_str());
+        UVO_LOG_DEBUG("network", "Socket::CloseSocket: %s errored when shutting down socket: %i (%s)", GetRemoteIpAddress().to_string().c_str(),
+                     shutdownError.value(), shutdownError.message().c_str());
     }
     
     /// Marks the socket for closing after write buffer becomes empty
@@ -133,7 +136,7 @@ protected:
     bool AsyncProcessQueue(std::unique_lock<std::mutex>&)
     {
         if (_isWritingAsync)
-            return false;
+        return false;
         
         _isWritingAsync = true;
         
@@ -187,7 +190,7 @@ private:
                 CloseSocket();
         }
         else
-            CloseSocket();
+        CloseSocket();
     }
     
 #else
@@ -237,7 +240,7 @@ private:
     bool HandleQueue(std::unique_lock<std::mutex>& guard)
     {
         if (_writeQueue.empty())
-            return false;
+        return false;
         
         MessageBuffer& queuedMessage = _writeQueue.front();
         

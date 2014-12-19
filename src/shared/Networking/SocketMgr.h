@@ -1,9 +1,9 @@
 #ifndef _TUMORS_SocketMGR_H
 #define _TUMORS_SocketMGR_H
 
-#include "Common.h"
 #include "AsyncAcceptor.h"
 #include "Config.h"
+#include "Errors.h"
 #include "NetworkThread.h"
 #include <boost/asio/ip/tcp.hpp>
 #include <memory>
@@ -16,6 +16,7 @@ class SocketMgr
 public:
     virtual ~SocketMgr()
     {
+        delete _acceptor;
         delete[] _threads;
     }
     
@@ -29,11 +30,19 @@ public:
             return false;
         }
         
-        _acceptor = new AsyncAcceptor(service, bindIp, port);
+        try
+        {
+            _acceptor = new AsyncAcceptor(service, bindIp, port);
+        }
+        catch (boost::system::system_error const& err)
+        {
+            UVO_LOG_ERROR("network", "Exception caught in SocketMgr.StartNetwork (%s:%u): %s", bindIp.c_str(), port, err.what());
+            return false;
+        }
+        
         _threads = CreateThreads();
         
-        //NEEDTOFIX ASSERT DOESN"T EXIST IN THIS CONTEXT
-        //ASSERT(_threads);
+        ASSERT(_threads);
         
         for (int32 i = 0; i < _threadCount; ++i)
             _threads[i].Start();
