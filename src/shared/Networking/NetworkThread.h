@@ -37,7 +37,7 @@ public:
     bool Start()
     {
         if (_thread)
-        return false;
+            return false;
         
         _thread = new std::thread(&NetworkThread::Run, this);
         return true;
@@ -75,7 +75,7 @@ protected:
         std::lock_guard<std::mutex> lock(_newSocketsLock);
         
         if (_newSockets.empty())
-        return;
+            return;
         
         for (typename SocketSet::const_iterator i = _newSockets.begin(); i != _newSockets.end(); ++i)
         {
@@ -86,7 +86,7 @@ protected:
                 --_connections;
             }
             else
-            _Sockets.insert(*i);
+                _Sockets.insert(*i);
         }
         
         _newSockets.clear();
@@ -113,7 +113,7 @@ protected:
                 if (!(*i)->Update())
                 {
                     if ((*i)->IsOpen())
-                    (*i)->CloseSocket();
+                        (*i)->CloseSocket();
                     
                     SocketRemoved(*i);
                     
@@ -121,7 +121,7 @@ protected:
                     _Sockets.erase(i++);
                 }
                 else
-                ++i;
+                    ++i;
             }
             
             diff = GetMSTimeDiffToNow(tickStart);
