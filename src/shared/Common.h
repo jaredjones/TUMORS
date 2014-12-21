@@ -64,7 +64,7 @@
 
 #if PLATFORM == PLATFORM_UNIX || PLATFORM == PLATFORM_APPLE
 #ifdef __APPLE__
-#define PLATFORM_TEXT "MacOSX"
+#define PLATFORM_TEXT "OSX"
 #define UNIX_FLAVOUR UNIX_FLAVOUR_OSX
 #else
 #ifdef USE_KQUEUE
@@ -79,11 +79,11 @@
 
 #if PLATFORM == PLATFORM_WIN32 && PLATFORM != PLATFORM_WIN64
 #define PLATFORM_TEXT "Win32"
-#define ARCH "X86"
+#define ARCH "x86"
 #else
 #if PLATFORM == PLATFORM_WIN64
 #define PLATFORM_TEXT "Win64"
-#define ARCH "X64"
+#define ARCH "x64"
 #endif
 #endif
 
@@ -95,9 +95,9 @@
 
 #if PLATFORM != PLATFORM_WIN32
 #ifdef _LP64
-#define ARCH "X64"
+#define ARCH "x64"
 #else
-#define ARCH "X86"
+#define ARCH "x86"
 #endif
 #endif
 
@@ -182,10 +182,10 @@
 
 /* Values for the second argument to access.
 These may be OR'd together.  */
-#define R_OK    4       /* Test for read permission.  */
-#define W_OK    2       /* Test for write permission.  */
+#define R_OK        4       /* Test for read permission.  */
+#define W_OK        2       /* Test for write permission.  */
 //#define   X_OK    1       /* execute permission - unsupported in windows*/
-#define F_OK    0       /* Test for existence.  */
+#define F_OK        0       /* Test for existence.  */
 
 #define access _access
 #define dup2 _dup2

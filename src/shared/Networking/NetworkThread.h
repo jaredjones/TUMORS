@@ -40,7 +40,7 @@ public:
             return false;
         
         _thread = new std::thread(&NetworkThread::Run, this);
-        return true;
+            return true;
     }
     
     void Wait()

@@ -24,26 +24,31 @@ void WorldSocket::Start()
 {
     AsyncRead();
     HandleSendAuthSession();
+    printf("A\n");
 }
 
 void WorldSocket::HandleSendAuthSession()
 {
-    
+    printf("B\n");
 }
 
 void WorldSocket::ReadHandler()
 {
     if (!IsOpen())
         return;
+    
+    GetReadBuffer();
 }
 
 bool WorldSocket::ReadHeaderHandler()
 {
+    printf("D\n");
     return true;
 }
 
 bool WorldSocket::ReadDataHandler()
 {
+    printf("E\n");
     return true;
 }
 

@@ -13,7 +13,19 @@ using boost::asio::ip::tcp;
 template<class SocketType>
 class SocketMgr
 {
+protected:
+    SocketMgr() : _acceptor(nullptr), _threads(nullptr), _threadCount(1)
+    {
+    }
+    
+    virtual NetworkThread<SocketType>* CreateThreads() const = 0;
+    
+    AsyncAcceptor* _acceptor;
+    NetworkThread<SocketType>* _threads;
+    int32 _threadCount;
 public:
+    int32 GetNetworkThreadCount() const { return _threadCount; }
+    
     virtual ~SocketMgr()
     {
         delete _acceptor;
@@ -86,19 +98,6 @@ public:
             UVO_LOG_INFO("network", "Failed to retrieve client's remote address %s", err.what());
         }
     }
-    
-    int32 GetNetworkThreadCount() const { return _threadCount; }
-    
-protected:
-    SocketMgr() : _acceptor(nullptr), _threads(nullptr), _threadCount(1)
-    {
-    }
-    
-    virtual NetworkThread<SocketType>* CreateThreads() const = 0;
-    
-    AsyncAcceptor* _acceptor;
-    NetworkThread<SocketType>* _threads;
-    int32 _threadCount;
 };
 
 #endif
